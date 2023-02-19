@@ -1,10 +1,21 @@
 package pkg
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"time"
 )
+
+func BufferedChanelTest(name string, ch chan string){
+	select {
+	case <- ch:  
+		fmt.Println("band hogaya")
+		return 
+	default:
+		ch <- name
+	}
+}
 
 func ParallelGet(url string, ch chan <- time.Duration){
 	start := time.Now()
