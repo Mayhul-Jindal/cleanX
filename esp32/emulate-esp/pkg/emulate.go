@@ -23,6 +23,8 @@ type Sensor_Data struct{
 	Gps GPS_Data
 }
 
+
+
 func Emulate(){
 	rand.Seed(time.Now().UnixNano())
 	
