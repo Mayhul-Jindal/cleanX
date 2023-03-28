@@ -1,23 +1,23 @@
 package pkg
 
 type EspInternal struct{
-	Temperature float64
+	Temperature int
 }
 
 type EspGps struct{
-	X float64
-	Y float64
+	X int
+	Y int
 }
 
 type EspMagnetometer struct{
-	X float64
-	Y float64
-	Z float64
+	X int
+	Y int
+	Z int
 }
 
 type EspDht11 struct{
-	Temperature float64
-	Humidity float64
+	Temperature int
+	Humidity int
 }
 
 type EspSonar struct{

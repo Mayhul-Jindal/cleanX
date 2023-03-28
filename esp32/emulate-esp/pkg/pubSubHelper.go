@@ -1,16 +1,18 @@
 package pkg
 
 import (
+	"encoding/json"
 	"fmt"
 	"math/rand"
-	"time"
 	"os"
+	"time"
+
 	"github.com/eclipse/paho.mqtt.golang"
 )
 
 func generateRandomClientID() string {
 	rand.Seed(time.Now().UnixNano())
-	var id string = "mqtt-client-"
+	var id string = "esp32-"
 	for i := 0; i < 10; i++ {
 	   randomNumber := rand.Intn(10) 
 	   id += fmt.Sprintf("%v", randomNumber)
@@ -18,8 +20,8 @@ func generateRandomClientID() string {
 	return id
  }
 
-func StartConnection() (*mqtt.Client, string){
-	brokerURI := "tcp://broker.hivemq.com:1883"
+func StartConnection(URI string) (*mqtt.Client, string){
+	brokerURI := URI
 	clientID := generateRandomClientID()
 	mqttClient := mqtt.NewClient(mqtt.NewClientOptions().AddBroker(brokerURI).SetClientID(clientID))
 
@@ -29,15 +31,20 @@ func StartConnection() (*mqtt.Client, string){
 			time.Sleep(1 * time.Second)
 		}else{
 			fmt.Fprintf(os.Stdout, "Connection success\n")
-			break
+			return &mqttClient, clientID
 		}
 	}
-	
-	return &mqttClient, clientID
+
+	return nil, ""
 }
 
 func PublishData(mqttClient *mqtt.Client, topic string, qos byte, retain bool, data any){
-	payload := fmt.Sprintf("%+v", data) 
+	jsonData, err := json.Marshal(data)
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "Error encoding data into JSON: %v\n", err)
+        return
+    }
+	payload := string(jsonData)
 	
 	if token := (*mqttClient).Publish(topic, qos, retain, payload); token.Wait() && token.Error() != nil {
         fmt.Fprintf(os.Stderr, "Publishing of Topic: %v failed: %v\n", topic, token.Error())
