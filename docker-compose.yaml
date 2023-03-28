@@ -1,24 +1,45 @@
 version: '3'
 
 services:
-  mqtt:
-    image: eclipse-mosquitto 
-    ports:
-      - 1883:1883
-    volumes:
-      - ./mosquitto-docker:/mosquitto
+  # mqtt:
+  #   image: eclipse-mosquitto 
+  #   ports:
+  #     - 1883:1883
+  #   volumes:
+  #     - ./mosquitto-docker:/mosquitto
+
+  # telegraf:
+  #   image: telegraf
+  #   volumes:
+  #   - ./telegraf-docker/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+  #   depends_on:
+  #     - influxdb
+  #   ports:
+  #   - '8125:8125'
+
+  # influxdb:
+  #   image: influxdb:2.0
+  #   environment:
+  #     - INFLUXDB_DB=sensordb
+  #     - INFLUXDB_USER=telegraf
+  #     - INFLUXDB_USER_PASSWORD=telegraf
+  #   ports:
+  #     - 8086:8086
+  #   volumes:
+  #     - influxdb-storage:/var/lib/influxdb
 
   grafana:
     image: grafana/grafana
+    environment:
+      - GF_DEFAULT_APP_MODE=development
+    # depends_on:
+    #   - influxdb
     ports:
       - 3000:3000
     volumes:
       - grafana-storage:/var/lib/grafana
-      - /home/buri/coding/SSV/grafana/grafana-plugin:/var/lib/grafana/plugins
+      - /home/buri/coding/SSV/grafana-docker/grafana-plugin:/var/lib/grafana/plugins
 
 volumes:
   grafana-storage:
-
-  # telegraf:
-  # prometheus:
-  # influxDB:
+  # influxdb-storage:
